@@ -2,8 +2,11 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 
-from library.serializer import BookSerializer, AuthorSerializer
+
+from library.serializer import BookSerializer, AuthorSerializer, LocationSerializer
+from .models import Book, Author
 
 
 # Create your views here.
@@ -30,5 +33,27 @@ def create_author(request):
 
     return Response(author_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# TODO: GET BOOK BY ID and return json response..
-# TODO: GET AUTHOR BY ID and return json response..
+@api_view(['POST'])
+def create_location(requests):
+    location_serilizer = LocationSerializer(data=requests.data)
+
+    if location_serilizer.is_valid():
+        location_serilizer.save()
+        return Response(location_serilizer.data, status=status.HTTP_201_CREATED)
+    return Response(location_serilizer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+#get all books
+@api_view(['GET'])
+def get_book(request):
+    test = {'message': 'This is a GET response'}
+    booklist = Book.objects.all()
+    print(booklist)
+    book_serializer = BookSerializer(data=booklist, many=True)
+    
+
+    if book_serializer.is_valid():
+        #return Response(test,status=status.HTTP_200_OK)
+        json_data = JSONRenderer().render(book_serializer.data)
+        return Response(json_data, status=status.HTTP_200_OK)
+        #return Response(test)
