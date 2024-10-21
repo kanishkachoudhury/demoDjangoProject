@@ -48,12 +48,14 @@ def create_location(requests):
 def get_book(request):
     test = {'message': 'This is a GET response'}
     booklist = Book.objects.all()
-    print(booklist)
     book_serializer = BookSerializer(data=booklist, many=True)
     
 
     if book_serializer.is_valid():
+        print(book_serializer.data)
+        return Response(book_serializer.data, status=status.HTTP_200_OK)
+    
         #return Response(test,status=status.HTTP_200_OK)
-        json_data = JSONRenderer().render(book_serializer.data)
-        return Response(json_data, status=status.HTTP_200_OK)
+        #json_data = JSONRenderer().render(book_serializer.data)
+        #return Response(json_data, status=status.HTTP_200_OK)
         #return Response(test)
