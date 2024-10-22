@@ -43,19 +43,9 @@ def create_location(requests):
     return Response(location_serilizer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#get all books
 @api_view(['GET'])
 def get_book(request):
-    test = {'message': 'This is a GET response'}
-    booklist = Book.objects.all()
-    book_serializer = BookSerializer(data=booklist, many=True)
-    
-
-    if book_serializer.is_valid():
-        print(book_serializer.data)
-        return Response(book_serializer.data, status=status.HTTP_200_OK)
-    
-        #return Response(test,status=status.HTTP_200_OK)
-        #json_data = JSONRenderer().render(book_serializer.data)
-        #return Response(json_data, status=status.HTTP_200_OK)
-        #return Response(test)
+    listBook = Book.objects.all()
+    print(listBook)
+    book_serializer = BookSerializer(listBook, many=True)
+    return Response(data=book_serializer.data, status=status.HTTP_200_OK)
